@@ -53,7 +53,7 @@ public class ClientApplication {
 		multicastIP = "224.0.0.5";
 		multicastGroup = InetAddress.getByName(multicastIP);
 		multicastPort = 4446;
-		unicastPort = 4448;
+		unicastPort = 4447;
 		previousID = -1;
 		nextID = -1;
 
@@ -186,7 +186,7 @@ public class ClientApplication {
 	}
 
 	@ServiceActivator(inputChannel = "Multicast")
-	public void multicastEvent(Message<byte[]> message) throws IOException {
+	public void multicastEvent(Message<byte[]> message) {
 		byte[] payload = message.getPayload();
 		DatagramPacket dataPacket = new DatagramPacket(payload, payload.length);
 
