@@ -1,4 +1,4 @@
-package dist.group2.TestOnPC.NamingServer;
+package dist.group2.NamingServer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

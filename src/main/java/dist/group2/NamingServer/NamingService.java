@@ -1,14 +1,12 @@
-package dist.group2.TestOnPC.NamingServer;
+package dist.group2.NamingServer;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.udp.MulticastReceivingChannelAdapter;
-import org.springframework.integration.ip.udp.UnicastReceivingChannelAdapter;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -16,7 +14,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.*;
 
-import static dist.group2.NamingServer.NamingServer.JsonHelper.convertMapToJson;
+import static dist.group2.NamingServer.JsonHelper.convertMapToJson;
 
 @Service
 public class NamingService {

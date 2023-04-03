@@ -1,4 +1,4 @@
-package dist.group2.TestOnPC.NamingServer;
+package dist.group2.NamingServer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
