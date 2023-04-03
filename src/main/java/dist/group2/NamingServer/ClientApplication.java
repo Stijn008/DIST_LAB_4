@@ -1,6 +1,7 @@
 package dist.group2.NamingServer;
 
 import jakarta.annotation.PreDestroy;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +28,11 @@ public class ClientApplication {
 	private int multicastPort;
 	private int previousID;
 	private int nextID;
+
+	public static void main(String[] args) {
+		// Run Naming Server
+		SpringApplication.run(ClientApplication.class, args);
+	}
 
 	public ClientApplication() throws UnknownHostException {
 		name = InetAddress.getLocalHost().getHostName();
