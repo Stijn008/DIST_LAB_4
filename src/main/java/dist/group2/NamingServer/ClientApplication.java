@@ -147,6 +147,13 @@ public class ClientApplication {
 		int currentID = hashValue(name);
 
 		// Test if this node should become the previousID of the new node
+		System.out.println("currentID " + currentID);
+		System.out.println("newNodeID " + newNodeID);
+		System.out.println("nextID " + nextID);
+		System.out.println("previousID " + previousID);
+		System.out.println(currentID <= newNodeID && newNodeID <= nextID);
+		System.out.println(previousID <= newNodeID && newNodeID <= currentID);
+
 		if (currentID <= newNodeID && newNodeID <= nextID) {
 			nextID = newNodeID;
 			sleep(500);    // Wait so the responses don't collide
