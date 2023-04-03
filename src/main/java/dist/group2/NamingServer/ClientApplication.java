@@ -154,14 +154,14 @@ public class ClientApplication {
 		// Test if this node should become the previousID of the new node
 		if ((currentID <= newNodeID && newNodeID <= nextID) || currentID == nextID) {
 			nextID = newNodeID;
-			sleep(500);    // Wait so the responses don't collide
+			sleep(100);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 
 		// Test if this node should become the nextID of the new node
 		if ((previousID <= newNodeID && newNodeID <= currentID) || currentID == previousID) {
 			previousID = newNodeID;
-			sleep(1000);    // Wait so the responses don't collide
+			sleep(200);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "nextID");
 		}
 	}
@@ -231,26 +231,31 @@ public class ClientApplication {
 	}
 
 	public void setNeighbouringNodeIDs(int numberOfNodes) {
-		if (numberOfNodes == 1) {
-			// No other nodes in the network -> set previous & next ID to itself
-			previousID = hashValue(name);
-			nextID = hashValue(name);
-		} else {
-			// Other nodes detected -> wait 5s for response from previous & next node in the chain
-			//int timeElapsed = 0;
-			//while (previousID == -1 || nextID == -1) {
-			//	sleep(10);
-			//	timeElapsed += 10;
-//
-			//	// Failure if IDs are not received after 5s
-			//	if (timeElapsed > 5000) {
-			//		System.out.println("<" + this.name + "> - ERROR - No unicast with IDs received after 5s");
-			//		failure();
-			//	}
-			//}
-		}
-		//System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+		// Set previous & next ID to itself (even if there are other nodes, the IDs will be updated later on)
+		previousID = hashValue(name);
+		nextID = hashValue(name);
 	}
+
+	//public void setNeighbouringNodeIDs(int numberOfNodes) {
+	//	if (numberOfNodes == 1) {
+	//		// No other nodes in the network -> set previous & next ID to itself
+	//		previousID = hashValue(name);
+	//		nextID = hashValue(name);
+	//	} else {
+	//		// Other nodes detected -> wait 5s for response from previous & next node in the chain
+	//		int timeElapsed = 0;
+	//		while (previousID == -1 || nextID == -1) {
+	//			sleep(10);
+	//			timeElapsed += 10;
+	//			// Failure if IDs are not received after 5s
+	//			if (timeElapsed > 5000) {
+	//				System.out.println("<" + this.name + "> - ERROR - No unicast with IDs received after 5s");
+	//				failure();
+	//			}
+	//		}
+	//	}
+	//	System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+	//}
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                          GENERAL PURPOSE METHODS
