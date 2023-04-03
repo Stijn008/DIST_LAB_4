@@ -154,14 +154,14 @@ public class ClientApplication {
 		System.out.println(currentID <= newNodeID && newNodeID <= nextID);
 		System.out.println(previousID <= newNodeID && newNodeID <= currentID);
 
-		if (currentID <= newNodeID && newNodeID <= nextID) {
+		if ((currentID <= newNodeID && newNodeID <= nextID) || currentID == nextID) {
 			nextID = newNodeID;
 			sleep(500);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 
 		// Test if this node should become the nextID of the new node
-		if(previousID <= newNodeID && newNodeID <= currentID) {
+		if ((previousID <= newNodeID && newNodeID <= currentID) || currentID == previousID) {
 			previousID = newNodeID;
 			sleep(1000);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "nextID");
@@ -373,8 +373,11 @@ public class ClientApplication {
 			return IPAddress;
 		} catch(Exception e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to find IPAddress of node with ID" + nodeID + " - " + e);
-			failure();
-			throw new IllegalStateException("Client has failed and should have been stopped by now");
+			if(!shuttingDown) {
+				failure();
+				throw new IllegalStateException("Client has failed and should have been stopped by now");
+			}
+			return null;
 		}
 	}
 }
