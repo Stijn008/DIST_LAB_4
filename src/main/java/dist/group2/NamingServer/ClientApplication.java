@@ -147,14 +147,14 @@ public class ClientApplication {
 		int currentID = hashValue(name);
 
 		// Test if this node should become the previousID of the new node
-		if (currentID <= newNodeID & newNodeID <= nextID) {
+		if (currentID <= newNodeID && newNodeID <= nextID) {
 			nextID = newNodeID;
 			sleep(500);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 
 		// Test if this node should become the nextID of the new node
-		if(previousID <= newNodeID & newNodeID <= currentID) {
+		if(previousID <= newNodeID && newNodeID <= currentID) {
 			previousID = newNodeID;
 			sleep(1000);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "nextID");
@@ -186,7 +186,6 @@ public class ClientApplication {
 		DatagramPacket dataPacket = new DatagramPacket(payload, payload.length);
 
 		String RxData = new String(dataPacket.getData(), 0, dataPacket.getLength());
-		compareIDs(RxData);
 		System.out.println(name + " - Received multicast message from other node: " + RxData + InetAddress.getLocalHost().getHostAddress());
 
 		// Use this multicast data to update your previous & next node IDs
@@ -216,17 +215,14 @@ public class ClientApplication {
 
 		if (previousOrNext.equals("previousID")) {      // Transmitter becomes previous ID
 			previousID = currentID; // Set previous ID
+			System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 		} else if (previousOrNext.equals("nextID")) {   // Transmitter becomes next ID
 			nextID = currentID;
+			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 		} else {
 			System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
 			failure();
 		}
-
-		System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-
-
-		System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 	}
 
 	public void setNeighbouringNodeIDs(int numberOfNodes) {
