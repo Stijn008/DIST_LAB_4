@@ -59,43 +59,6 @@ public class ClientApplication {
 
 		System.out.println("<---> " + name + " Instantiated with IP " + IPAddress + " <--->");
 		bootstrap();
-		runloop();
-	}
-
-	public void runloop() {
-		while (true) {
-			try {
-				// Prepare receiving socket & packet
-				byte[] RxBuffer = new byte[256];
-				DatagramSocket socket = new DatagramSocket(unicastPort);
-				DatagramPacket dataPacket = new DatagramPacket(RxBuffer, RxBuffer.length);
-
-				// Wait to receive & close socket
-				socket.receive(dataPacket);
-				socket.close();
-				System.out.println("<---> Received unicast response to multicast of node " + IPAddress + " <--->");
-
-				String RxData = new String(dataPacket.getData(), 0, dataPacket.getLength());
-				System.out.println("Received unicast message: " + RxData);
-
-				int currentID = Integer.parseInt(RxData.split("\\|")[0]);
-				String previousOrNext = RxData.split("\\|")[1];
-
-				if (previousOrNext.equals("previousID")) {      // Transmitter becomes previous ID
-					previousID = currentID; // Set previous ID
-					System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-				} else if (previousOrNext.equals("nextID")) {   // Transmitter becomes next ID
-					nextID = currentID;
-					System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-				} else {
-					System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
-					failure();
-				}
-			} catch (Exception e) {
-				System.out.println("\t"+e.getMessage());
-				failure();
-			}
-		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -120,7 +83,6 @@ public class ClientApplication {
 			setNeighbouringNodeIDs(numberOfNodes);
 		} catch (Exception e) {
 			System.out.println("\t"+e.getMessage());
-			failure();
 		}
 	}
 
@@ -277,14 +239,7 @@ public class ClientApplication {
 			// Other nodes detected -> wait 5s for response from previous & next node in the chain
 			int timeElapsed = 0;
 			while (previousID == -1 || nextID == -1) {
-				sleep(10);
-				timeElapsed += 10;
-
-				// Failure if IDs are not received after 5s
-				if (timeElapsed > 5000) {
-					System.out.println("<" + this.name + "> - ERROR - No unicast with IDs received after 5s");
-					failure();
-				}
+				
 			}
 		}
 		System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
