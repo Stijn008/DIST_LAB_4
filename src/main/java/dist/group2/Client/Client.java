@@ -47,12 +47,7 @@ public class Client implements Runnable {
     public void run() {
         while (true) {
             try {
-                findFile("file1.txt");
-                sleep(1000);
-                findFile("file2.txt");
-                sleep(1000);
-                findFile("file3.txt");
-                sleep(10000);
+                sleep(100);
             } catch (Exception e) {
                 System.out.println("\t"+e.getMessage());
             }
