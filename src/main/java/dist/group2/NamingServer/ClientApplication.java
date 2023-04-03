@@ -91,11 +91,8 @@ public class ClientApplication {
 		deleteNode(name);
 	}
 
-
 	public void failure() {
 		System.out.println("<---> " + name + " Failure <--->");
-
-
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -127,7 +124,6 @@ public class ClientApplication {
 			}
 		}
 		System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-
 	}
 
 	public void sendMulticast() {
