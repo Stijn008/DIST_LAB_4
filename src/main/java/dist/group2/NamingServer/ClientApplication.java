@@ -237,12 +237,19 @@ public class ClientApplication {
 			nextID = hashValue(name);
 		} else {
 			// Other nodes detected -> wait 5s for response from previous & next node in the chain
-			int timeElapsed = 0;
-			while (previousID == -1 || nextID == -1) {
-				
-			}
+			//int timeElapsed = 0;
+			//while (previousID == -1 || nextID == -1) {
+			//	sleep(10);
+			//	timeElapsed += 10;
+//
+			//	// Failure if IDs are not received after 5s
+			//	if (timeElapsed > 5000) {
+			//		System.out.println("<" + this.name + "> - ERROR - No unicast with IDs received after 5s");
+			//		failure();
+			//	}
+			//}
 		}
-		System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+		//System.out.println("<---> IDs successfully set - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
