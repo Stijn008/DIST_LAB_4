@@ -90,6 +90,9 @@ public class ClientApplication {
 	public void shutdown() {
 		System.out.println("<---> " + name + " Shutdown <--->");
 
+		// Set shuttingDown to true to avoid infinite failure loops
+		shuttingDown = true;
+
 		// Set the nextID value of the previous node to nextID of this node
 		if (previousID != hashValue(name)) {
 			System.out.println("Sending nextID to the previous node");
@@ -115,8 +118,10 @@ public class ClientApplication {
 	}
 
 	public void failure() {
-		System.out.println("<---> " + name + " Failure <--->");
-		shutdown();
+		if (!shuttingDown) {
+			System.out.println("<---> " + name + " Failure <--->");
+			shutdown();
+		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -193,7 +198,7 @@ public class ClientApplication {
 		DatagramPacket dataPacket = new DatagramPacket(payload, payload.length);
 
 		String RxData = new String(dataPacket.getData(), 0, dataPacket.getLength());
-		System.out.println(name + " - Received multicast message from other node: " + RxData + InetAddress.getLocalHost().getHostAddress());
+		System.out.println(name + " - Received multicast message from other node: " + RxData);
 
 		// Use this multicast data to update your previous & next node IDs
 		compareIDs(RxData);
@@ -281,13 +286,13 @@ public class ClientApplication {
 		}
 	}
 
-	public void sendUnicast(String message, String IPAddress, int port) {
+	public void sendUnicast(String message, String IPAddress2, int port) {
 		try {
-			System.out.println("<---> Send response to multicast of node " + IPAddress + " <--->");
+			System.out.println("<---> Send response to multicast of node " + IPAddress2 + " <--->");
 
 			// Prepare response packet
 			byte[] Txbuffer = message.getBytes();
-			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress), port);
+			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
 			// Send response to the IP of the node on port 4447
 			DatagramSocket socket = new DatagramSocket();
@@ -373,10 +378,7 @@ public class ClientApplication {
 			return IPAddress;
 		} catch(Exception e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to find IPAddress of node with ID" + nodeID + " - " + e);
-			if(!shuttingDown) {
-				failure();
-				throw new IllegalStateException("Client has failed and should have been stopped by now");
-			}
+			failure();
 			return null;
 		}
 	}
