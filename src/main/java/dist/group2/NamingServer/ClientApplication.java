@@ -152,13 +152,6 @@ public class ClientApplication {
 		int currentID = hashValue(name);
 
 		// Test if this node should become the previousID of the new node
-		System.out.println("currentID " + currentID);
-		System.out.println("newNodeID " + newNodeID);
-		System.out.println("nextID " + nextID);
-		System.out.println("previousID " + previousID);
-		System.out.println(currentID <= newNodeID && newNodeID <= nextID);
-		System.out.println(previousID <= newNodeID && newNodeID <= currentID);
-
 		if ((currentID <= newNodeID && newNodeID <= nextID) || currentID == nextID) {
 			nextID = newNodeID;
 			sleep(500);    // Wait so the responses don't collide
@@ -288,7 +281,7 @@ public class ClientApplication {
 
 	public void sendUnicast(String message, String IPAddress2, int port) {
 		try {
-			System.out.println("<---> Send response to multicast of node " + IPAddress2 + " <--->");
+			System.out.println("<---> Send response to multicast of node " + IPAddress2 + " on port " + port + " <--->");
 
 			// Prepare response packet
 			byte[] Txbuffer = message.getBytes();
