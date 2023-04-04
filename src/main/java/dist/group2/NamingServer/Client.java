@@ -57,7 +57,13 @@ public class Client implements Runnable {
 	}
 
 	public void run() {
+		while(true) {
+			try {
+				wait(5);
+			} catch (Exception e) {
 
+			}
+		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -113,13 +119,7 @@ public class Client implements Runnable {
 		Thread.currentThread().interrupt();
 
 		// Enter infinite while loop
-		while(true) {
-			try {
-				wait(5);
-			} catch (Exception e) {
-
-			}
-		}
+		while(true) {}
 	}
 
 	public void failure() {
