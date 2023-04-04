@@ -113,7 +113,13 @@ public class Client implements Runnable {
 		Thread.currentThread().interrupt();
 
 		// Enter infinite while loop
-		while(true) {}
+		while(true) {
+			try {
+				wait(5);
+			} catch (Exception e) {
+
+			}
+		}
 	}
 
 	public void failure() {
