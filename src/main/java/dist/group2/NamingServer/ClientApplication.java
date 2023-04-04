@@ -154,6 +154,7 @@ public class ClientApplication {
 		// Test if this node should become the previousID of the new node
 		if ((currentID <= newNodeID && newNodeID <= nextID) || currentID == nextID) {
 			nextID = newNodeID;
+			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 			sleep(100);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
@@ -161,6 +162,7 @@ public class ClientApplication {
 		// Test if this node should become the nextID of the new node
 		if ((previousID <= newNodeID && newNodeID <= currentID) || currentID == previousID) {
 			previousID = newNodeID;
+			System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 			sleep(200);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "nextID");
 		}
