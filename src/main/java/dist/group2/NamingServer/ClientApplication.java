@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 public class ClientApplication {
     public static void main(String[] args) throws UnknownHostException {
         // Run Client thread
-        Thread clientThread1 = (Thread) SpringApplication.run(Client.class, args);
+        SpringApplication.run(Client.class, args);
         //Thread clientThread1 = new Thread(client);
         clientThread1.start();	// Only client1 is running and asking for the file locations
 

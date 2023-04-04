@@ -3,6 +3,7 @@ package dist.group2.NamingServer;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.udp.MulticastReceivingChannelAdapter;
@@ -29,7 +30,6 @@ public class Client {
 	// Discovery Parameters
 	private String namingServerIP;
 	private DatagramSocket multicastTxSocket;
-	private MulticastSocket multicastRxSocket;
 	private String multicastIP;
 	private InetAddress multicastGroup;
 	private int multicastPort;
@@ -38,10 +38,12 @@ public class Client {
 	private int nextID;
 	private boolean shuttingDown=false;
 
-	//public static void main(String[] args) {
-	//	// Run Naming Server
-	//	SpringApplication.run(Client.class, args);
-	//}
+	private static ApplicationContext context;
+
+	public static void main(String[] args) {
+		// Run Client
+		context = SpringApplication.run(Client.class, args);
+	}
 
 	public Client() throws UnknownHostException {
 		name = InetAddress.getLocalHost().getHostName();
@@ -109,6 +111,10 @@ public class Client {
 
 		// Delete this node from the Naming Server's database
 		deleteNode(name);
+
+		// Stop execution of Spring Boot application
+		System.out.println("<---> " + name + " Spring Boot Stopped <--->");
+		SpringApplication.exit(context);
 
 		// Set isInterrupted flag high to stop the client thread
 		Thread.currentThread().interrupt();
