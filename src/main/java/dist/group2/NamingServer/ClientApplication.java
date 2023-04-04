@@ -190,7 +190,7 @@ public class ClientApplication {
 		multicastSocket = new MulticastSocket(4446);
 		InetAddress group = InetAddress.getByName(multicastIP);
 		multicastSocket.joinGroup(group);
-		return socket;
+		return multicastSocket;
 	}
 
 	@ServiceActivator(inputChannel = "Multicast")
