@@ -37,6 +37,7 @@ public class ClientApplication {
 	private int previousID;
 	private int nextID;
 	private boolean shuttingDown=false;
+	private MulticastSocket multicastSocket;
 
 	private static ApplicationContext context;
 
@@ -113,13 +114,13 @@ public class ClientApplication {
 
 		// Stop execution of Spring Boot application
 		System.out.println("<---> " + name + " Spring Boot Stopped <--->");
+		multicastSocket.close();
 		SpringApplication.exit(context);
 
-		// Set isInterrupted flag high to stop the client thread
-		Thread.currentThread().interrupt();
-
-		// Enter infinite while loop
-		while(true) {}
+		//// Set isInterrupted flag high to stop the client thread
+		//Thread.currentThread().interrupt();
+		//// Enter infinite while loop
+		//while(true) {}
 	}
 
 	public void failure() {
@@ -186,9 +187,9 @@ public class ClientApplication {
 
 	@Bean
 	public DatagramSocket datagramSocket() throws IOException {
-		MulticastSocket socket = new MulticastSocket(4446);
+		multicastSocket = new MulticastSocket(4446);
 		InetAddress group = InetAddress.getByName(multicastIP);
-		socket.joinGroup(group);
+		multicastSocket.joinGroup(group);
 		return socket;
 	}
 
