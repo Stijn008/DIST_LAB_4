@@ -18,8 +18,8 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
-//@SpringBootApplication
-public class Client implements Runnable {
+@SpringBootApplication
+public class Client {
 	private final String name;
 	private final String IPAddress;
 	private final int namingPort;
@@ -38,6 +38,11 @@ public class Client implements Runnable {
 	private int nextID;
 	private boolean shuttingDown=false;
 
+	//public static void main(String[] args) {
+	//	// Run Naming Server
+	//	SpringApplication.run(Client.class, args);
+	//}
+
 	public Client() throws UnknownHostException {
 		name = InetAddress.getLocalHost().getHostName();
 		IPAddress = InetAddress.getLocalHost().getHostAddress();
@@ -54,16 +59,6 @@ public class Client implements Runnable {
 
 		System.out.println("<---> " + name + " Instantiated with IP " + IPAddress + " <--->");
 		bootstrap();
-	}
-
-	public void run() {
-		while(true) {
-			try {
-				wait(5);
-			} catch (Exception e) {
-
-			}
-		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
