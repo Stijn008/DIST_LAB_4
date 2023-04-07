@@ -90,6 +90,7 @@ public class NamingService {
         }
         repository.put(hashValue(node.get("nodeName")), node.get("IPAddress"));
         convertMapToJson(repository);
+        System.out.println("Hash of " + node.get("nodeName") + " is added to the database");
     }
 
     public synchronized void deleteNode(String nodeName) {
@@ -98,6 +99,7 @@ public class NamingService {
         }
         repository.remove(hashValue(nodeName));
         convertMapToJson(repository);
+        System.out.println("Hash of " + nodeName + " is removed to the database");
     }
 
     @Transactional
