@@ -157,7 +157,7 @@ public class ClientApplication {
 		int newNodeID = hashValue(newNodeName);
 		int currentID = hashValue(name);
 
-		sleep(100);    // Wait so the responses don't collide
+		sleep(1000);    // Wait so the responses follow that of the naming server
 
 		if (currentID == nextID) {	// Test if this node is alone -> change previous and next ID to the new node
 			previousID = newNodeID;
@@ -173,6 +173,7 @@ public class ClientApplication {
 		} else if (currentID <= newNodeID && newNodeID <= nextID) {	// Test if the new node should become the nextID of the new node
 			nextID = newNodeID;
 			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+			sleep(100);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 	}
