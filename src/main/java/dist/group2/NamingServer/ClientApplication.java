@@ -163,9 +163,7 @@ public class ClientApplication {
 			previousID = newNodeID;
 			nextID = newNodeID;
 			System.out.println("<---> connected to first other node - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-			respondToMulticast(newNodeIP, currentID, "previousID");
-			sleep(100);    // Wait so the responses don't collide
-			respondToMulticast(newNodeIP, currentID, "nextID");
+			respondToMulticast(newNodeIP, currentID, "bothIDs");
 		} else if (previousID < newNodeID && newNodeID <= currentID) {	// Test if this node should become the previousID of the new node
 			previousID = newNodeID;
 			System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
@@ -173,7 +171,7 @@ public class ClientApplication {
 		} else if (currentID <= newNodeID && newNodeID <= nextID) {	// Test if the new node should become the nextID of the new node
 			nextID = newNodeID;
 			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-			sleep(100);    // Wait so the responses don't collide
+			sleep(500);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 	}
@@ -229,11 +227,14 @@ public class ClientApplication {
 
 		int currentID = Integer.parseInt(RxData.split("\\|")[0]);
 		String previousOrNext = RxData.split("\\|")[1];
-
-		if (previousOrNext.equals("previousID")) {      // Transmitter becomes previous ID
+		if (previousOrNext.equals("bothIDs")) {				// Transmitter becomes previous & next ID
+			previousID = currentID; // Set previous ID
+			nextID = currentID;
+			System.out.println("<---> previous & next IDs changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+		} else if (previousOrNext.equals("previousID")) {   // Transmitter becomes previous ID
 			previousID = currentID; // Set previous ID
 			System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-		} else if (previousOrNext.equals("nextID")) {   // Transmitter becomes next ID
+		} else if (previousOrNext.equals("nextID")) {   	// Transmitter becomes next ID
 			nextID = currentID;
 			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 		} else {
