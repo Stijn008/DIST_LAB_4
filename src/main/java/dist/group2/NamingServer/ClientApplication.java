@@ -205,7 +205,7 @@ public class ClientApplication {
 
 	@Bean
 	public DatagramSocket datagramSocket() throws IOException {
-		multicastSocket = new MulticastSocket(4446);
+		multicastSocket = reserveMulticastSocket(4446);
 		InetAddress group = InetAddress.getByName(multicastIP);
 		multicastSocket.joinGroup(group);
 		return multicastSocket;
@@ -260,6 +260,39 @@ public class ClientApplication {
 	} */
 
 	// -----------------------------------------------------------------------------------------------------------------
+	//                                            GET SOCKETS SECURELY
+	// -----------------------------------------------------------------------------------------------------------------
+	public MulticastSocket reserveMulticastSocket(int port) {
+		MulticastSocket mcSocket = null;
+		try {
+			mcSocket = new MulticastSocket(port);
+		} catch (IOException e) {
+			try {
+				mcSocket.close();
+			} catch (Exception e2) {
+				System.out.println("ERROR - Failed to close the multicast socket!");
+				failure();
+			}
+		}
+		return mcSocket;
+	}
+
+	public DatagramSocket reserveDatagramSocket(int port) {
+		DatagramSocket datagramSocket = null;
+		try {
+			datagramSocket = new DatagramSocket(port);
+		} catch (IOException e) {
+			try {
+				datagramSocket.close();
+			} catch (Exception e2) {
+				System.out.println("ERROR - Failed to close the datagram socket!");
+				failure();
+			}
+		}
+		return datagramSocket;
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
 	//                                          GENERAL PURPOSE METHODS
 	// -----------------------------------------------------------------------------------------------------------------
 	public String receiveUnicast(int port) {
@@ -268,7 +301,7 @@ public class ClientApplication {
 
 			// Prepare receiving socket & packet
 			byte[] RxBuffer = new byte[256];
-			DatagramSocket socket = new DatagramSocket(port);
+			DatagramSocket socket = reserveDatagramSocket(port);
 			DatagramPacket dataPacket = new DatagramPacket(RxBuffer, RxBuffer.length);
 
 			// Wait to receive & close socket
@@ -295,7 +328,7 @@ public class ClientApplication {
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
 			// Send response to the IP of the node on port 4447
-			DatagramSocket socket = new DatagramSocket();
+			DatagramSocket socket = reserveDatagramSocket(4447);
 			socket.send(packet);
 			socket.close();
 		} catch (IOException e) {
