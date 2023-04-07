@@ -88,7 +88,11 @@ public class ClientApplication {
 				nextID = hashValue(name); 		// Set nextID to its own ID
 				System.out.println("<---> No other nodes present: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 			} else {
-				String previousOrNext;
+				previousID = hashValue(name); 	// Set previousID to its own ID
+				nextID = hashValue(name); 		// Set nextID to its own ID
+				System.out.println("<---> Other nodes present: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+
+				/* String previousOrNext;
 				int counter = 0;
 				int newID;
 
@@ -99,7 +103,7 @@ public class ClientApplication {
 					previousOrNext = RxData.split("\\|")[1];
 					System.out.println("Received answer to multicast from other node - Set " + previousOrNext + " to " + newID);
 					counter++;
-				}
+				} */
 			}
 
 			// Set the baseURL for further communication with the naming server
@@ -205,7 +209,12 @@ public class ClientApplication {
 
 	@Bean
 	public DatagramSocket datagramSocket() throws IOException {
-		multicastSocket = reserveMulticastSocket(4446);
+		try {
+			multicastSocket = new MulticastSocket(4446);
+		} catch (Exception e) {
+			System.out.println("Address already in use");
+			failure();
+		}
 		InetAddress group = InetAddress.getByName(multicastIP);
 		multicastSocket.joinGroup(group);
 		return multicastSocket;
@@ -226,7 +235,7 @@ public class ClientApplication {
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                              UNICAST LISTENER
 	// -----------------------------------------------------------------------------------------------------------------
-	/* @Bean
+	@Bean
 	public UnicastReceivingChannelAdapter unicastReceiver() {
 		UnicastReceivingChannelAdapter adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
@@ -257,39 +266,6 @@ public class ClientApplication {
 			System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
 			failure();
 		}
-	} */
-
-	// -----------------------------------------------------------------------------------------------------------------
-	//                                            GET SOCKETS SECURELY
-	// -----------------------------------------------------------------------------------------------------------------
-	public MulticastSocket reserveMulticastSocket(int port) {
-		MulticastSocket mcSocket = null;
-		try {
-			mcSocket = new MulticastSocket(port);
-		} catch (IOException e) {
-			try {
-				mcSocket.close();
-			} catch (Exception e2) {
-				System.out.println("ERROR - Failed to close the multicast socket!");
-				failure();
-			}
-		}
-		return mcSocket;
-	}
-
-	public DatagramSocket reserveDatagramSocket(int port) {
-		DatagramSocket datagramSocket = null;
-		try {
-			datagramSocket = new DatagramSocket(port);
-		} catch (IOException e) {
-			try {
-				datagramSocket.close();
-			} catch (Exception e2) {
-				System.out.println("ERROR - Failed to close the datagram socket!");
-				failure();
-			}
-		}
-		return datagramSocket;
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -299,9 +275,17 @@ public class ClientApplication {
 		try {
 			System.out.println("<---> Waiting for unicast response from NS to multicast of node " + IPAddress + " <--->");
 
-			// Prepare receiving socket & packet
+			// Prepare receiving socket
 			byte[] RxBuffer = new byte[256];
-			DatagramSocket socket = reserveDatagramSocket(port);
+			DatagramSocket socket = null;
+			try {
+				socket = new DatagramSocket(port);
+			} catch (Exception e) {
+				System.out.println("Address already in use");
+				failure();
+			}
+
+			// Prepare receiving packet
 			DatagramPacket dataPacket = new DatagramPacket(RxBuffer, RxBuffer.length);
 
 			// Wait to receive & close socket
@@ -327,8 +311,16 @@ public class ClientApplication {
 			byte[] Txbuffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
+			// Create socket on port 4447
+			DatagramSocket socket = null;
+			try {
+				socket = new DatagramSocket(4447);
+			} catch (Exception e) {
+				System.out.println("Address already in use");
+				failure();
+			}
+
 			// Send response to the IP of the node on port 4447
-			DatagramSocket socket = reserveDatagramSocket(4447);
 			socket.send(packet);
 			socket.close();
 		} catch (IOException e) {
