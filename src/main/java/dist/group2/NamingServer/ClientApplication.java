@@ -76,10 +76,31 @@ public class ClientApplication {
 			sendMulticast();
 
 			// Listen on port 4447 for a response with the number of nodes & IP address of the naming server
+			System.out.println("Waiting for response from - Naming Server");
 			String RxData = receiveUnicast(4447);
 			namingServerIP = RxData.split("\\|")[0];
 			int numberOfNodes = Integer.parseInt(RxData.split("\\|")[1]);
 			System.out.println("Received answer to multicast from naming server - " + numberOfNodes + " node(s) in the network");
+
+
+			if (numberOfNodes == 1) {
+				previousID = hashValue(name); 	// Set previousID to its own ID
+				nextID = hashValue(name); 		// Set nextID to its own ID
+				System.out.println("<---> No other nodes present: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+			} else {
+				String previousOrNext;
+				int counter = 0;
+				int newID;
+
+				while (counter < 2) {
+					System.out.println("Waiting for response from - Other Nodes");
+					RxData = receiveUnicast(4448);
+					newID = Integer.parseInt(RxData.split("\\|")[0]);
+					previousOrNext = RxData.split("\\|")[1];
+					System.out.println("Received answer to multicast from other node - Set " + previousOrNext + " to " + newID);
+					counter++;
+				}
+			}
 
 			// Set the baseURL for further communication with the naming server
 			baseUrl = "http://" + namingServerIP + ":" + namingPort + "/api/naming";
@@ -116,11 +137,6 @@ public class ClientApplication {
 		System.out.println("<---> " + name + " Spring Boot Stopped <--->");
 		multicastSocket.close();
 		SpringApplication.exit(context);
-
-		//// Set isInterrupted flag high to stop the client thread
-		//Thread.currentThread().interrupt();
-		//// Enter infinite while loop
-		//while(true) {}
 	}
 
 	public void failure() {
@@ -210,7 +226,7 @@ public class ClientApplication {
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                              UNICAST LISTENER
 	// -----------------------------------------------------------------------------------------------------------------
-	@Bean
+	/* @Bean
 	public UnicastReceivingChannelAdapter unicastReceiver() {
 		UnicastReceivingChannelAdapter adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
@@ -241,7 +257,7 @@ public class ClientApplication {
 			System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
 			failure();
 		}
-	}
+	} */
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                          GENERAL PURPOSE METHODS
