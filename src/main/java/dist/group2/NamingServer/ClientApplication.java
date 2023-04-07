@@ -157,7 +157,7 @@ public class ClientApplication {
 		try {
 			System.out.println("<---> " + name + " Discovery Multicast Sending <--->");
 
-			multicastTxSocket = new DatagramSocket();
+			multicastTxSocket = new DatagramSocket(multicastPort);
 			String data = name + "|" + IPAddress;
 			byte[] Txbuffer = data.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, multicastGroup, multicastPort);
@@ -311,16 +311,16 @@ public class ClientApplication {
 			byte[] Txbuffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
-			// Create socket on port 4447
+			// Create socket on the unicast port
 			DatagramSocket socket = null;
 			try {
-				socket = new DatagramSocket(4447);
+				socket = new DatagramSocket(unicastPort);
 			} catch (Exception e) {
 				System.out.println("Address already in use");
 				failure();
 			}
 
-			// Send response to the IP of the node on port 4447
+			// Send response to the IP of the node on the unicast port
 			socket.send(packet);
 			socket.close();
 		} catch (IOException e) {
