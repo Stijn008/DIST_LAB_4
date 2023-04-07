@@ -76,7 +76,6 @@ public class ClientApplication {
 			sendMulticast();
 
 			// Listen on port 4447 for a response with the number of nodes & IP address of the naming server
-			System.out.println("Waiting for response from - Naming Server");
 			String RxData = receiveUnicast(4447);
 			namingServerIP = RxData.split("\\|")[0];
 			int numberOfNodes = Integer.parseInt(RxData.split("\\|")[1]);
@@ -291,7 +290,6 @@ public class ClientApplication {
 			// Wait to receive & close socket
 			socket.receive(dataPacket);
 			socket.close();
-			System.out.println("<---> Received unicast response to multicast of node " + IPAddress + " <--->");
 
 			// Read data from dataPacket
 			String RxData = new String(dataPacket.getData(), 0, dataPacket.getLength());
@@ -402,7 +400,7 @@ public class ClientApplication {
 			System.out.println("<" + this.name + "> - Node with ID " + nodeID + " has IPAddress " + IPAddress);
 			return IPAddress;
 		} catch(Exception e) {
-			System.out.println("<" + this.name + "> - ERROR - Failed to find IPAddress of node with ID" + nodeID + " - " + e);
+			System.out.println("<" + this.name + "> - ERROR - Failed to find IPAddress of node with ID " + nodeID + " - " + e);
 			failure();
 			return null;
 		}
