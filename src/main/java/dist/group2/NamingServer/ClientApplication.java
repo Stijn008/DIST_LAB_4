@@ -157,20 +157,21 @@ public class ClientApplication {
 		int newNodeID = hashValue(newNodeName);
 		int currentID = hashValue(name);
 
-		// Test if this node should become the previousID of the new node
-		if ((currentID <= newNodeID && newNodeID <= nextID) || currentID == nextID) {
+		if (currentID == nextID) {	// Test if this node is alone -> change previous and next ID to the new node
+			previousID = newNodeID;
 			nextID = newNodeID;
-			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-			//sleep(100);    // Wait so the responses don't collide
+			System.out.println("<---> connected to first other node - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
 			respondToMulticast(newNodeIP, currentID, "previousID");
-		}
-
-		// Test if this node should become the nextID of the new node
-		if ((previousID <= newNodeID && newNodeID <= currentID) || currentID == previousID) {
+			sleep(100);    // Wait so the responses don't collide
+			respondToMulticast(newNodeIP, currentID, "nextID");
+		} else if (previousID < newNodeID && newNodeID <= currentID) {	// Test if this node should become the previousID of the new node
 			previousID = newNodeID;
 			System.out.println("<---> previousID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
-			//sleep(200);    // Wait so the responses don't collide
 			respondToMulticast(newNodeIP, currentID, "nextID");
+		} else if (currentID <= newNodeID && newNodeID <= nextID) {	// Test if the new node should become the nextID of the new node
+			nextID = newNodeID;
+			System.out.println("<---> nextID changed - previousID: " + previousID + ", thisID: " + hashValue(name) + ", nextID: " + nextID + " <--->");
+			respondToMulticast(newNodeIP, currentID, "previousID");
 		}
 	}
 
