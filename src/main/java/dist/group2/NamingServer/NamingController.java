@@ -32,7 +32,6 @@ public class NamingController {
 
     @GetMapping(path = {"translate"})
     public String getIPAddress(int nodeID) {
-        System.out.println("Request IP of node with ID " + nodeID);
         return this.service.getIPAddress(nodeID);
     }
 }
