@@ -130,6 +130,7 @@ public class NamingService {
 
     @Transactional
     public synchronized String getIPAddress(int nodeID) {
+        System.out.println("Request IP of node with ID " + nodeID);
         String IPAddress = repository.getOrDefault(nodeID, "NotFound");
         if (IPAddress.equals("NotFound")) {
             throw new IllegalStateException("There is no node with ID " + nodeID + " in the repository");
