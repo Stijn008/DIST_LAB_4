@@ -157,6 +157,8 @@ public class ClientApplication {
 		int newNodeID = hashValue(newNodeName);
 		int currentID = hashValue(name);
 
+		sleep(100);    // Wait so the responses don't collide
+
 		if (currentID == nextID) {	// Test if this node is alone -> change previous and next ID to the new node
 			previousID = newNodeID;
 			nextID = newNodeID;
