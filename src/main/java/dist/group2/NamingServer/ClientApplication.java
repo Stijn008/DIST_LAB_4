@@ -250,7 +250,6 @@ public class ClientApplication {
 	public UnicastReceivingChannelAdapter unicastReceiver() {
 		adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
-		adapter.
 		return adapter;
 	}
 
