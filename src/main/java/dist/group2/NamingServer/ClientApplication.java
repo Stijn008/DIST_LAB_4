@@ -40,6 +40,7 @@ public class ClientApplication {
 	private MulticastSocket multicastSocket;
 
 	private static ApplicationContext context;
+	private final Object lock = new Object();
 
 	public static void main(String[] args) {
 		// Run Client
@@ -244,7 +245,7 @@ public class ClientApplication {
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                              UNICAST LISTENER
 	// -----------------------------------------------------------------------------------------------------------------
-	/* @Bean
+	@Bean
 	public UnicastReceivingChannelAdapter unicastReceiver() {
 		UnicastReceivingChannelAdapter adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
@@ -275,7 +276,7 @@ public class ClientApplication {
 			System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
 			failure();
 		}
-	} */ 
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                          GENERAL PURPOSE METHODS
@@ -319,10 +320,13 @@ public class ClientApplication {
 			byte[] Txbuffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
-			// Create socket on the unicast port
+			// Create socket on the unicast port (without conflicting with UnicastListener which uses the same port)
 			DatagramSocket socket = null;
 			try {
-				socket = new DatagramSocket(port);
+				synchronized (lock) {
+					// Acquire the lock before creating the DatagramSocket
+					socket = new DatagramSocket(port);
+				}
 			} catch (Exception e) {
 				System.out.println("Address already in use");
 				failure();
