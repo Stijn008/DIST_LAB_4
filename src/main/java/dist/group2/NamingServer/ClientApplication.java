@@ -123,14 +123,24 @@ public class ClientApplication {
 		if (previousID != hashValue(name)) {
 			System.out.println("Sending nextID to the previous node");
 			String messageToPrev = nextID + "|" + "nextID";
-			sendUnicast(messageToPrev, getIPAddress(previousID), unicastPort);
+			String previousIP = getIPAddress(previousID);
+			if (!previousIP.equals("NotFound")) {
+				sendUnicast(messageToPrev, previousIP, unicastPort);
+			} else {
+				System.out.println("ERROR - couldn't notify previous node: IP not present in NS");
+			}
 		}
 
 		// Set the previousID value of the next node to previousID of this node
 		if (nextID != hashValue(name)) {
 			System.out.println("Sending previousID to the next node");
 			String messageToNext = previousID + "|" + "previousID";
-			sendUnicast(messageToNext, getIPAddress(previousID), unicastPort);
+			String nextIP = getIPAddress(previousID);
+			if (!nextIP.equals("NotFound")) {
+				sendUnicast(messageToNext, nextIP, unicastPort);
+			} else {
+				System.out.println("ERROR - couldn't notify next node because IP is not in present in the NS");
+			}
 		}
 
 		// Delete this node from the Naming Server's database
