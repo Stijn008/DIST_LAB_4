@@ -30,7 +30,7 @@ public class NamingController {
         return this.service.findFile(fileName);
     }
 
-    @GetMapping(path = {"translate"})
+    @GetMapping(path = {"/translate"})
     public String getIPAddress(int nodeID) {
         return this.service.getIPAddress(nodeID);
     }
