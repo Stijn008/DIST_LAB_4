@@ -312,7 +312,7 @@ public class ClientApplication {
 			// Create socket on the unicast port
 			DatagramSocket socket = null;
 			try {
-				socket = new DatagramSocket(unicastPort);
+				socket = new DatagramSocket(port);
 			} catch (Exception e) {
 				System.out.println("Address already in use");
 				failure();
@@ -321,6 +321,7 @@ public class ClientApplication {
 			// Send response to the IP of the node on the unicast port
 			socket.send(packet);
 			socket.close();
+			socket.disconnect();
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send unicast - " + e);
 			failure();
