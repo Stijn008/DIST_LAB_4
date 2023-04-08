@@ -41,6 +41,7 @@ public class ClientApplication {
 
 	private static ApplicationContext context;
 	private final Object lock = new Object();
+	UnicastReceivingChannelAdapter adapter;
 
 	public static void main(String[] args) {
 		// Run Client
@@ -136,7 +137,7 @@ public class ClientApplication {
 		if (nextID != hashValue(name)) {
 			System.out.println("Sending previousID to the next node");
 			String messageToNext = previousID + "|" + "previousID";
-			String nextIP = getIPAddress(previousID);
+			String nextIP = getIPAddress(nextID);
 			if (!nextIP.equals("NotFound")) {
 				sendUnicast(messageToNext, nextIP, unicastPort);
 			} else {
@@ -247,8 +248,9 @@ public class ClientApplication {
 	// -----------------------------------------------------------------------------------------------------------------
 	@Bean
 	public UnicastReceivingChannelAdapter unicastReceiver() {
-		UnicastReceivingChannelAdapter adapter = new UnicastReceivingChannelAdapter(unicastPort);
+		adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
+		adapter.
 		return adapter;
 	}
 
@@ -314,19 +316,20 @@ public class ClientApplication {
 
 	public void sendUnicast(String message, String IPAddress2, int port) {
 		try {
-			System.out.println("<---> Send response to multicast of node " + IPAddress2 + " on port " + port + " <--->");
+			System.out.println("<---> Send unicast to node " + IPAddress2 + " on port " + port + " <--->");
 
 			// Prepare response packet
 			byte[] Txbuffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
-			sleep(500);
 			// Create socket on the unicast port (without conflicting with UnicastListener which uses the same port)
+			adapter.stop();
+			sleep(500);
 			DatagramSocket socket = null;
 			synchronized (lock) {
 				try {
 					// Acquire the lock before creating the DatagramSocket
-					socket = new DatagramSocket(port);
+					socket = new DatagramSocket();
 				} catch (Exception e) {
 					System.out.println("Address already in use");
 					failure();
@@ -339,6 +342,8 @@ public class ClientApplication {
 				socket.close();
 				socket.disconnect();
 			}
+			sleep(500);
+			adapter.start();
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send unicast - " + e);
 			failure();
