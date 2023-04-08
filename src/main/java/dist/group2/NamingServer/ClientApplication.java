@@ -323,19 +323,22 @@ public class ClientApplication {
 			sleep(500);
 			// Create socket on the unicast port (without conflicting with UnicastListener which uses the same port)
 			DatagramSocket socket = null;
-			try {
-				synchronized (lock) {
+			synchronized (lock) {
+				try {
 					// Acquire the lock before creating the DatagramSocket
 					socket = new DatagramSocket(port);
+				} catch (Exception e) {
+					System.out.println("Address already in use");
+					failure();
 				}
-			} catch (Exception e) {
-				System.out.println("Address already in use");
-				failure();
 			}
 
 			// Send response to the IP of the node on the unicast port
-			socket.send(packet);
-			socket.close();
+			if (socket != null) {
+				socket.send(packet);
+				socket.close();
+				socket.disconnect();
+			}
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send unicast - " + e);
 			failure();
