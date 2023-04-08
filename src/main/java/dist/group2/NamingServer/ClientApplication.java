@@ -234,7 +234,7 @@ public class ClientApplication {
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                              UNICAST LISTENER
 	// -----------------------------------------------------------------------------------------------------------------
-	@Bean
+	/* @Bean
 	public UnicastReceivingChannelAdapter unicastReceiver() {
 		UnicastReceivingChannelAdapter adapter = new UnicastReceivingChannelAdapter(unicastPort);
 		adapter.setOutputChannelName("Unicast");
@@ -265,7 +265,7 @@ public class ClientApplication {
 			System.out.println("<" + this.name + "> - ERROR - Unicast received 2nd parameter other than 'previousID' or 'nextID'");
 			failure();
 		}
-	}
+	} */ 
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//                                          GENERAL PURPOSE METHODS
