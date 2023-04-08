@@ -56,7 +56,7 @@ public class ClientApplication {
 		multicastIP = "224.0.0.5";
 		multicastGroup = InetAddress.getByName(multicastIP);
 		multicastPort = 4446;
-		unicastPort = 4448;
+		unicastPort = 4449;
 
 		// Set previous & next ID to itself (even if there are other nodes, the IDs will be updated later on)
 		previousID = hashValue(name);
