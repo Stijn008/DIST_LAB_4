@@ -29,7 +29,6 @@ public class ClientApplication {
 
 	// Discovery Parameters
 	private String namingServerIP;
-	private DatagramSocket multicastTxSocket;
 	private String multicastIP;
 	private InetAddress multicastGroup;
 	private int multicastPort;
@@ -37,7 +36,7 @@ public class ClientApplication {
 	private int previousID;
 	private int nextID;
 	private boolean shuttingDown=false;
-	private MulticastSocket multicastSocket;
+	private MulticastSocket multicastSocket=new MulticastSocket();
 
 	private static ApplicationContext context;
 	UnicastReceivingChannelAdapter adapter;
@@ -47,7 +46,7 @@ public class ClientApplication {
 		context = SpringApplication.run(ClientApplication.class, args);
 	}
 
-	public ClientApplication() throws UnknownHostException {
+	public ClientApplication() throws IOException {
 		name = InetAddress.getLocalHost().getHostName();
 		IPAddress = InetAddress.getLocalHost().getHostAddress();
 		namingPort = 8080;
@@ -167,13 +166,11 @@ public class ClientApplication {
 		try {
 			System.out.println("<---> " + name + " Discovery Multicast Sending <--->");
 
-			multicastTxSocket = new DatagramSocket(multicastPort);
 			String data = name + "|" + IPAddress;
 			byte[] Txbuffer = data.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, multicastGroup, multicastPort);
 
-			multicastTxSocket.send(packet);
-			multicastTxSocket.close();
+			multicastSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send multicast - " + e);
 			failure();
@@ -220,7 +217,7 @@ public class ClientApplication {
 	@Bean
 	public DatagramSocket datagramSocket() throws IOException {
 		try {
-			multicastSocket = new MulticastSocket(4446);
+			multicastSocket = new MulticastSocket(multicastPort);
 		} catch (Exception e) {
 			System.out.println("Address already in use");
 			failure();
@@ -421,7 +418,7 @@ public class ClientApplication {
 		} catch(Exception e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to find IPAddress of node with ID " + nodeID + " - " + e);
 			failure();
-			return null;
+			return "NotFound";
 		}
 	}
 }
