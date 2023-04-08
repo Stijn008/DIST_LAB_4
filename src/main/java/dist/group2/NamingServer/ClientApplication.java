@@ -320,6 +320,7 @@ public class ClientApplication {
 			byte[] Txbuffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
+			sleep(500);
 			// Create socket on the unicast port (without conflicting with UnicastListener which uses the same port)
 			DatagramSocket socket = null;
 			try {
@@ -335,7 +336,6 @@ public class ClientApplication {
 			// Send response to the IP of the node on the unicast port
 			socket.send(packet);
 			socket.close();
-			socket.disconnect();
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send unicast - " + e);
 			failure();
