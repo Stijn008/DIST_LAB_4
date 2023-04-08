@@ -394,7 +394,7 @@ public class ClientApplication {
 
 	@GetMapping
 	public String getIPAddress(int nodeID) {
-		String url = baseUrl + "/translate/" + "?nodeID=" + nodeID;
+		String url = baseUrl + "/translate" + "?nodeID=" + nodeID;
 		try {
 			String IPAddress = restTemplate.getForObject(url, String.class);
 			System.out.println("<" + this.name + "> - Node with ID " + nodeID + " has IPAddress " + IPAddress);
