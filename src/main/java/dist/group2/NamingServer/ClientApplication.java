@@ -40,7 +40,6 @@ public class ClientApplication {
 	private MulticastSocket multicastSocket;
 
 	private static ApplicationContext context;
-	private final Object lock = new Object();
 	UnicastReceivingChannelAdapter adapter;
 
 	public static void main(String[] args) {
@@ -325,14 +324,12 @@ public class ClientApplication {
 			adapter.stop();
 			sleep(500);
 			DatagramSocket socket = null;
-			synchronized (lock) {
-				try {
-					// Acquire the lock before creating the DatagramSocket
-					socket = new DatagramSocket();
-				} catch (Exception e) {
-					System.out.println("Address already in use");
-					failure();
-				}
+			try {
+				// Acquire the lock before creating the DatagramSocket
+				socket = new DatagramSocket();
+			} catch (Exception e) {
+				System.out.println("Address already in use");
+				failure();
 			}
 
 			// Send response to the IP of the node on the unicast port
