@@ -99,7 +99,7 @@ public class NamingService {
         }
         repository.remove(hashValue(nodeName));
         convertMapToJson(repository);
-        System.out.println("Hash of " + nodeName + " is removed to the database");
+        System.out.println("Hash of " + nodeName + " is removed from the database");
     }
 
     @Transactional
