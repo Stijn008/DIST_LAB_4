@@ -318,8 +318,6 @@ public class ClientApplication {
 			DatagramPacket packet = new DatagramPacket(Txbuffer, Txbuffer.length, InetAddress.getByName(IPAddress2), port);
 
 			// Create socket on the unicast port (without conflicting with UnicastListener which uses the same port)
-			adapter.stop();
-			sleep(500);
 			DatagramSocket socket = null;
 			try {
 				// Acquire the lock before creating the DatagramSocket
@@ -335,8 +333,6 @@ public class ClientApplication {
 				socket.close();
 				socket.disconnect();
 			}
-			sleep(500);
-			adapter.start();
 		} catch (IOException e) {
 			System.out.println("<" + this.name + "> - ERROR - Failed to send unicast - " + e);
 			failure();
